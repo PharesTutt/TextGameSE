@@ -1,0 +1,11 @@
+.//resources//Pictures//scene1a.jpg
+text to test scene function
+.//resources//Music//Real Idle music.wav
+b1t
+b1func
+b2
+b2func
+b3
+b3func
+b4
+b4func
