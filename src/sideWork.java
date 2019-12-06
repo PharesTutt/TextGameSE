@@ -49,6 +49,13 @@ public  void SetSceneVar(String SFN)//SFN = SceneFileName
 	//SceneSetup();
 }
 
+public void ButtonFunction(String Function) {
+	if(Function.equals("")) {
+		
+	}// change buttonFunction V to SceneSetup
+	else ButtonFunction(Function);
+
+}
 
 public void SetBlank() {
 	PPath ="";

@@ -13,13 +13,13 @@ import java.awt.Graphics2D;
 //import java.awt.GraphicsDevice;
 //import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 public class Game implements ComponentListener
 {
@@ -27,13 +27,14 @@ public class Game implements ComponentListener
 	Container con;
 	Clip audio;
 	JPanel titleNamePanel,PicturePanel,ScenePanel, startButtonPanel, mainTextPanel, choiceButtonPanel, playerPanel, voiceOptionsPanel, itemBagPanel;
-	JLabel titleNameLabel,PictureLabel,SceneLabel;
+	JLabel titleNameLabel,PictureLabel,SceneLabel,hpLabel, hpLabelNumber, weaponLabel, weaponLabelName;
 	JButton startButton,loadButton,exitButton, choice1,choice2,choice3,choice4;
-	JTextArea mainTextArea, voiceOptions;
-	String titleMusic, gameMusic, encounterMusic;
-	String text,imagePath,PPath,folderName;
+	JTextArea mainTextArea, voiceOptions, itemBag;
+	int WinCondition = 0, HP, MHP;
+	String weapon,Position,monsterName, titleMusic, gameMusic, encounterMusic;
+	Random random = new Random();
+	String text,imagePath,PPath;
 	ImageIcon image;
-	Image lmage;
 	int windowWidth,windowHeight, image_w,image_h;
 	int i;
 	
@@ -48,7 +49,7 @@ public class Game implements ComponentListener
 	
 	/////////////////////////////////////////////////////////////
 	sideWork sw=new sideWork();
-	String scene=".//resources//TextFiles//"+folderName+"//TitleScreen";
+	String scene="/Users/tutt/eclipse-workspace/TextGame3/resources/TextFiles/Scenetest.txt";
 	public static void main(String[] args) //main method
 	{
 		
@@ -87,10 +88,7 @@ public class Game implements ComponentListener
 	{
 	//	GraphicsEnvironment gEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
 	//	gDevice = gEnvironment.getDefaultScreenDevice();
-		folderName = "Cardinal Exploring";
-		 scene=".//resources//TextFiles//"+folderName+"//TitleScreen";
-		sw.SetSceneVar(scene);
-		System.out.println(sw.MPath);
+		
 		titleMusic = ".//resources//Music//YouLikeJazz.wav";
 		gameMusic = ".//resources//Music//Real Idle music.wav";
 		encounterMusic = ".//resources//Music//suspense.wav";
@@ -116,10 +114,10 @@ public class Game implements ComponentListener
 		
 		
 		titleNamePanel = new JPanel();					//Create Title Screen
-		titleNamePanel.setBounds( 450, 30, 450, 80);
+		titleNamePanel.setBounds( 450, 30, 300, 80);
 		titleNamePanel.setBackground(Color.black);
 		titleNamePanel.setOpaque(true);
-		titleNameLabel = new JLabel(folderName);
+		titleNameLabel = new JLabel("Detective game");
 		titleNameLabel.setForeground(Color.white);
 		titleNameLabel.setFont(titleFont);
 		
@@ -130,11 +128,11 @@ public class Game implements ComponentListener
 		PicturePanel.setBackground(Color.blue);
 
 		PictureLabel = new JLabel();
-		imagePath = sw.PPath;
-		System.out.println(sw.PPath);
+		imagePath = ".//resources//Pictures//Final Title Screen21.jpg";
 		image = new ImageIcon(imagePath);
 		PictureLabel.setIcon(image);
 	    PicturePanel.add(PictureLabel);
+		
 
 		
 		startButtonPanel = new JPanel();				//Create Start Button
@@ -186,7 +184,6 @@ public class Game implements ComponentListener
 		mainTextArea.setLineWrap(true);
 		mainTextArea.setWrapStyleWord(true);
 		mainTextPanel.add(mainTextArea);
-		mainTextPanel.setOpaque(true);;
 ////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////	
@@ -240,16 +237,10 @@ public class Game implements ComponentListener
 		choice4.setBorderPainted(true);
 		choiceButtonPanel.add(choice4);
 		
-
-		
+		con.add(choiceButtonPanel);//,BorderLayout.SOUTH);
 		con.add(mainTextPanel);//,BorderLayout.CENTER);
-		
-		con.add(choiceButtonPanel);//,BorderLayout.SOUTH);	
-		
 		con.add(titleNamePanel);//,BorderLayout.CENTER);
-		
-		con.add(startButtonPanel);//,BorderLayout.SOUTH);
-		
+		con.add(startButtonPanel);//,BorderLayout.SOUTH);		
 		con.add(PicturePanel);
 
 
@@ -271,7 +262,7 @@ public class Game implements ComponentListener
 		
 		titleNamePanel.setVisible(true);
 		startButtonPanel.setVisible(true);
-		PicturePanel.setVisible(false);
+		PicturePanel.setVisible(true);
 	}
 	public void createGameScreen() //update window to display main game screen
 	{	
@@ -282,9 +273,14 @@ public class Game implements ComponentListener
 		choiceButtonPanel.setVisible(true);
 		mainTextPanel.setVisible(true);
 
-		scene = ".//resources//TextFiles//"+folderName+"//scene1";
-		SceneSetup();
+		playerSetup();
 	}
+	public void playerSetup()  // beginner player setup
+	{
+		WinCondition = 0;
+		townGate();
+	}
+	
 	  Timer timer = new Timer(20,new ActionListener()
 	{ @Override
 	  public void actionPerformed(ActionEvent e)
@@ -316,60 +312,313 @@ public class Game implements ComponentListener
 		timer.start();
 		
 	}
-	public void SceneSetup()
+	public void SceneSetup() 
 	{
 		sw.SetSceneVar(scene);
-		
-		if(!sw.MPath.equals("")) {
+		prepareText();
 		stop();
 		setFile(sw.MPath);
 		loop();
-		}else {
-			
-		}
+		Position = "townGate";
 		imagePath = sw.PPath;//set scene1a.jpg and folder to a variable
 		image = new ImageIcon(imagePath);
 		PictureLabel.setIcon(resize(image,window.getWidth(),window.getHeight()));
-		PicturePanel.revalidate();
-		PicturePanel.repaint();
+		PictureLabel.revalidate();
+		
+		//set text equal to what the received input is
+		text = sw.TPath;
 		choice1.setText(sw.B1Path);//change button text and functions to variables.
 		choice2.setText(sw.B2Path);
 		choice3.setText(sw.B3Path);
 		choice4.setText(sw.B4Path);
-		mainTextPanel.revalidate();
-		mainTextPanel.repaint();
-		choiceButtonPanel.setVisible(false);
-		choiceButtonPanel.setVisible(true);
-
+	}
+	public void townGate() 
+	{
+		sw.SetSceneVar(scene);
+		prepareText();
+		stop();
+		setFile(sw.MPath);
+		loop();
+		Position = "townGate";
+		imagePath = sw.PPath;//set scene1a.jpg and folder to a variable
+		image = new ImageIcon(imagePath);
+		PictureLabel.setIcon(resize(image,window.getWidth(),window.getHeight()));
+		PictureLabel.revalidate();
+		
 		//set text equal to what the received input is
 		text = sw.TPath;
 		prepareText();
-
+		choice1.setText(sw.B1Path);//change button text and functions to variables.
+		choice2.setText(sw.B2Path);
+		choice3.setText(sw.B3Path);
+		choice4.setText(sw.B4Path);
 	}
+	public void talkGuard() 
+	{
+		Position = "GateGuard";
+		//mainTextArea.setText("to continue please say north");
+		text ="to continue please say north";
+		prepareText();
+		choice1.setText("Activate voice command");
+		choice2.setText("Voice Options");
+		choice3.setText("Item Bag");
+		choice4.setText("");
+	}
+	public void CardinalDirection()
+	{
+		WinCondition ++; ;
+		if(WinCondition >= 15)
+		{
+			GameWin();
+		}else 
+		{
+		int RNG = (random.nextInt(6) + 1);
 	
+		switch(RNG){
+			case 1:openField(); break;
+			case 2:Encounter();break;
+			case 3:ruins(); break;
+			case 4:building();break;
+			case 5:lake(); break;
+			case 6:store();break;
+			}
+		}
+	}
+	public void Direction() 
+	{
+		int check = 0;
+		String result = Position;
+
+/////////////////////////////////////////////////////////////////////////////////////////////		
+		switch(result) {
+		case "GateGuard":
+ 			if(Position.equals("Fight")||Position.equals("curFight")) {
+
+			}else {
+				CardinalDirection();check++;
+			}
+ 			
+		break;
+		case "north":
+ 			if(Position.equals("Fight")||Position.equals("curFight")) {
+
+			}else {
+				CardinalDirection();check++;
+			}
+ 			
+		break;
+		case "east":
+ 			if(Position.equals("Fight")||Position.equals("curFight")) {
+
+			}else {
+				CardinalDirection();check++;
+			}
+ 			
+		break;
+		case "south":
+ 			if(Position.equals("Fight")||Position.equals("curFight")) {
+
+			}else {
+				CardinalDirection();check++;
+			}
+ 			
+		break;
+		case "west":
+ 			if(Position.equals("Fight")||Position.equals("curFight")) {
+
+			}else {
+				CardinalDirection();check++;
+			}
+ 			
+		break;
+		case "Fight":
+			if(Position.equals("Fight")||Position.equals("curFight")) {
+				damage();
+				check++;
+			}
+			break;
+		case "curFight":
+			if(Position.equals("Fight")||Position.equals("curFight")) {
+				damage();
+				check++;
+			}
+			break;
+		case "escape" :
+			if(Position.equals("Fight")||Position.equals("curFight")) {
+				CardinalDirection();
+				stop();
+				setFile(gameMusic);
+				loop();
+				check++;
+			}
+			break;
+		default:
+			CardinalDirection();
+		}
+////////////////////////////////////////////////////////////////////////////////////////////////	
+		
+		if(check == 1)
+		{
+			
+		}else {
+			choice1.setText("Try Again.");
+		}
+		
+	}
+	public void GameWin()
+	{
+		Position = "GameWin";
+		//mainTextArea.setText("You Reach Home with oodles of loot from Town.    \n <GAME WIN>");
+		text ="You Reach Home with oodles of loot from Town.    \n <GAME WIN>";
+		prepareText();
+		choice1.setText("Restart?");
+		choice2.setText("Exit");
+		choice3.setText("");
+		choice4.setText("");
+	}
+	public void openField()
+	{
+		Position = "openField";
+		//mainTextArea.setText("An open field nothing of interest here.");
+		text ="An open field nothing of interest here.";
+		prepareText();
+		choice1.setText("Voice command");
+		choice2.setText("Voice Options");
+		choice3.setText("Item Bag");
+		choice4.setText("");
+	}
+	public void ruins()
+	{
+		Position = "ruins";
+		//mainTextArea.setText("ruins lie before you indicating \na primordial civilization lay to wastes on these grounds.");
+		text ="ruins lie before you indicating \na primordial civilization lay to wastes on these grounds.";
+		prepareText();
+		choice1.setText("Voice command");
+		choice2.setText("Voice Options");
+		choice3.setText("Item Bag");
+		choice4.setText("");
+	}
+	public void building()
+	{
+		Position = "building";
+		//mainTextArea.setText("You come across an empty building and find nothing of value.");
+		text ="You come across an empty building and find nothing of value.";
+		prepareText();
+		choice1.setText("Voice command");
+		choice2.setText("Voice Options");
+		choice3.setText("Item Bag");
+		choice4.setText("");
+	}
+	public void lake()
+	{
+		Position = "lake";
+		//mainTextArea.setText("A wide open lake where many have settled.");
+		text ="A wide open lake where many have settled.";
+		prepareText();
+		choice1.setText("Voice command");
+		choice2.setText("Voice Options");
+		choice3.setText("Item Bag");
+		choice4.setText("");
+	}
+	public void store()
+	{
+		Position = "store";
+		//mainTextArea.setText("You come across a store that sells all kinds of \nmaterials and weapons. but you see theres a sign on \nthe door [Closed till Further Notice]");
+		text ="You come across a store that sells all kinds of \nmaterials and weapons. but you see theres a sign on \nthe door [Closed till Further Notice]";
+		prepareText();
+		choice1.setText("Voice command");
+		choice2.setText("Voice Options");
+		choice3.setText("Item Bag");
+		choice4.setText("");
+	}
+
+	public void Encounter()
+	{
+		stop();
+		setFile(encounterMusic);
+		loop();
+		Position = "Fight";
+		//genMonster();
+		monsterName = "zombie";
+		MHP = 16;
+		//mainTextArea.setText("MonsterHP: " + MHP + "\nyou encounter a " + monsterName + ". \nWhat do you do?");
+		text ="MonsterHP: " + MHP + "\nyou encounter a " + monsterName + ". \nWhat do you do?";
+		prepareText();
+		choice1.setText("Voice command");
+		choice2.setText("Voice Options");
+		choice3.setText("Item Bag");
+		choice4.setText("");
+	}
+	public void damage(){
+		int DP = 3;
+		MHP -= DP;
+		if (MHP <= 0)
+			fightWin();
+		else {
+		currentFight();
+		}
+	}
+	public void currentFight() {
+		if (MHP < 16) {
+		//mainTextArea.setText("You deal 3 damage to the " + monsterName+ "." + "\nMonsterHP: " + MHP + "\nMonster: " + monsterName);
+			text ="You deal 3 damage to the " + monsterName+ "." + "\nMonsterHP: " + MHP + "\nMonster: " + monsterName;
+			prepareText();
+		}else {
+		//mainTextArea.setText("MonsterHP: " + MHP + "     Monster: " + monsterName);
+			text ="MonsterHP: " + MHP + "     Monster: " + monsterName;
+			prepareText();
+		}
+		Position = "curFight";
+
+		choice1.setText("Voice command");
+		choice2.setText("Voice Options");
+		choice3.setText("Item Bag");
+		choice4.setText("");
+	}
+	public void fightWin() 
+	{
+		stop();
+		setFile(gameMusic);
+		loop();
+		Position = "win";
+		//mainTextArea.setText("You Defeated the " + monsterName + "! \nPlease input a direction.");
+		text ="You Defeated the "+ monsterName + "! \nPlease input a direction.";
+		prepareText();
+		choice1.setText("Voice command");
+		choice2.setText("Voice Options");
+		choice3.setText("Item Bag");
+		choice4.setText("");
+		
+	}
 	public int intRound(int x,double y) {
 		int result;
 		result = (int)Math.round(x*y);
 		
 	return result;
 	}
-	public void ButtonFunction(String Function) {
-		if(Function.equals("Exit")) {
-			System.exit(0);
-		}
-		if(Function.equals("")) {
-			
-		}// change buttonFunction V to SceneSetup
-		else { 
-			scene = ".//resources//TextFiles//"+folderName+"//"+Function;
-			SceneSetup();
+	/*public void genMonster() // to be implemented
+	{
 		
-		}
 		
-
+	}*/
+	/*
+	public void voiceOptions()
+	{
+		if(!voiceOptionsPanel.isVisible())
+		voiceOptionsPanel.setVisible(true);
+		else {
+			voiceOptionsPanel.setVisible(false);
+			 }
 	}
-
-	
+	public void itemBag()
+	{
+		if(!itemBagPanel.isVisible())
+			itemBagPanel.setVisible(true);
+		else {
+			itemBagPanel.setVisible(false);
+			 }
+	}
+	*/
 	public class TitleScreenHandler implements ActionListener
 	{
 		
@@ -385,14 +634,116 @@ public class Game implements ComponentListener
 		{
 			
 			String yourChoice = event.getActionCommand();
-				
+			/*	
 			switch(yourChoice){
-			case"c1":ButtonFunction(sw.B1Function);break;
-			case"c2":ButtonFunction(sw.B2Function);break;
-			case"c3":ButtonFunction(sw.B3Function);break;
-			case"c4":ButtonFunction(sw.B4Function);break;
+			case"c1":ButtonFunction(B1Function);break;
+			case"c2":ButtonFunction(B2Function);break;
+			case"c3":ButtonFunction(B3Function);break;
+			case"c4":ButtonFunction(B4Function);break;
+			}
+			*/
+			switch(Position){
+			case "townGate":
+				switch(yourChoice){
+				case"c1": talkGuard(); break;
+				case"c2":break;
+				case"c3":break;
+				case"c4":break;
+				}
+				break;
+			case "GateGuard":
+				switch(yourChoice) 
+				{
+				case"c1":Direction();break;
+				case"c2":break;
+				case"c3":break;
+				case"c4":break;
+				}
+				break;
+			case "Fight":
+				switch(yourChoice) 
+				{
+				case"c1":Direction();break;
+				case"c2":break;
+				case"c3":break;
+				case"c4":break;
+				}
+				break;
+			case "curFight":
+				switch(yourChoice) 
+				{
+				case"c1":Direction();break;
+				case"c2":break;
+				case"c3":break;
+				case"c4":break;
+				}
+				break;
+			case "win":
+				switch(yourChoice) 
+				{
+				case"c1":Direction();break;
+				case"c2":break;
+				case"c3":break;
+				case"c4":break;
+				}
+				break;
+			case "openField":
+				switch(yourChoice) 
+				{
+				case"c1":Direction();break;
+				case"c2":break;
+				case"c3":break;
+				case"c4":break;
+				}
+				break;
+			case "lake":
+				switch(yourChoice) 
+				{
+				case"c1":Direction();break;
+				case"c2":break;
+				case"c3":break;
+				case"c4":break;
+				}
+				break;
+			case "store":
+				switch(yourChoice) 
+				{
+				case"c1":Direction();break;
+				case"c2":break;
+				case"c3":break;
+				case"c4":break;
+				}
+				break;
+			case "building":
+				switch(yourChoice) 
+				{
+				case"c1":Direction();break;
+				case"c2":break;
+				case"c3":break;
+				case"c4":break;
+				}
+				break;
+			case "ruins":
+				switch(yourChoice) 
+				{
+				case"c1":Direction();break;
+				case"c2":break;
+				case"c3":break;
+				case"c4":break;
+				}
+				break;
+			case "GameWin":
+				switch(yourChoice) 
+				{
+				case"c1":Title();break;
+				case"c2":System.exit(0);break;
+				case"c3":break;
+				case"c4":break;
+				}
+				break;
 			}
 		}
+			
 
 	}
 	public static ImageIcon resize(ImageIcon target,int Width,int Height) {
@@ -425,7 +776,7 @@ public class Game implements ComponentListener
 	//	normalFont = new Font("Times New Roman", Font.PLAIN, 25);
 	//	textFont = new Font("Times New Roman", Font.PLAIN, 15);
 		
-		titleNamePanel.setBounds(intRound(windowWidth,0.55555), intRound(windowHeight,0.06), intRound(windowWidth,0.4270), intRound(windowHeight,0.16));
+		titleNamePanel.setBounds(intRound(windowWidth,0.55555), intRound(windowHeight,0.06), intRound(windowWidth,0.370370), intRound(windowHeight,0.16));
 		titleNamePanel.revalidate();
 		PicturePanel.setBounds(0, -(intRound(windowHeight,0.04)), intRound(windowWidth,1), intRound(windowHeight,1));	
 		PicturePanel.revalidate();
@@ -448,6 +799,7 @@ public class Game implements ComponentListener
 		mainTextArea.revalidate();
 		choiceButtonPanel.setBounds(intRound(windowWidth,0.6175), intRound(windowHeight,0.626), intRound(windowWidth,0.3703703704), intRound(windowHeight,0.3));
 		choiceButtonPanel.revalidate();
+
 	}
 	@Override
 	public void componentShown(ComponentEvent arg0) {
