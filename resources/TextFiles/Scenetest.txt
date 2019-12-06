@@ -1,7 +1,7 @@
 .//resources//Pictures//scene1a.jpg
 text to test scene function
 .//resources//Music//Real Idle music.wav
-b1t
+b1
 b1func
 b2
 b2func
