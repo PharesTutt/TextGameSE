@@ -87,7 +87,7 @@ public class Game implements ComponentListener
 	{
 	//	GraphicsEnvironment gEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
 	//	gDevice = gEnvironment.getDefaultScreenDevice();
-		folderName = "Cardinal Exploring";
+		folderName = "Gumshoe";
 		 scene=".//resources//TextFiles//"+folderName+"//TitleScreen";
 		sw.SetSceneVar(scene);
 		System.out.println(sw.MPath);
