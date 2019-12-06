@@ -327,11 +327,13 @@ public class Game implements ComponentListener
 		}else {
 			
 		}
+		if(!sw.PPath.equals("")) {
 		imagePath = sw.PPath;//set scene1a.jpg and folder to a variable
 		image = new ImageIcon(imagePath);
 		PictureLabel.setIcon(resize(image,window.getWidth(),window.getHeight()));
 		PicturePanel.revalidate();
 		PicturePanel.repaint();
+		}
 		choice1.setText(sw.B1Path);//change button text and functions to variables.
 		choice2.setText(sw.B2Path);
 		choice3.setText(sw.B3Path);
@@ -354,19 +356,21 @@ public class Game implements ComponentListener
 	return result;
 	}
 	public void ButtonFunction(String Function) {
+		try {
 		if(Function.equals("Exit")) {
 			System.exit(0);
 		}
 		if(Function.equals("")) {
-			
+
 		}// change buttonFunction V to SceneSetup
 		else { 
 			scene = ".//resources//TextFiles//"+folderName+"//"+Function;
 			SceneSetup();
 		
 		}
+		}catch(Exception e) {	
+		}
 		
-
 	}
 
 	
@@ -392,6 +396,7 @@ public class Game implements ComponentListener
 			case"c3":ButtonFunction(sw.B3Function);break;
 			case"c4":ButtonFunction(sw.B4Function);break;
 			}
+			
 		}
 
 	}
