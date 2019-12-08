@@ -19,7 +19,8 @@ public  void SetSceneVar(String SFN)//SFN = SceneFileName
 		{
 			PPath =br.readLine();
 		//read path for text file
-			TPath = br.readLine();
+			TPath = textReader(br.readLine());
+			
 		//read path for audio if available
 			MPath = br.readLine();
 		//read path for button text 1 and function
@@ -48,7 +49,24 @@ public  void SetSceneVar(String SFN)//SFN = SceneFileName
 	
 	//SceneSetup();
 }
+private static String textReader(String filePath) 
+{
+    StringBuilder contentBuilder = new StringBuilder();
+    try (BufferedReader tr = new BufferedReader(new FileReader(filePath))) 
+    {
 
+        String sCurrentLine;
+        while ((sCurrentLine = tr.readLine()) != null) 
+        {
+            contentBuilder.append(sCurrentLine).append("\n");
+        }
+    } 
+    catch (Exception e) 
+    {
+        e.printStackTrace();
+    }
+    return contentBuilder.toString();
+}
 
 public void SetBlank() {
 	PPath ="";
