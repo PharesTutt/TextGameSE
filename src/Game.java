@@ -165,7 +165,8 @@ public class Game implements ComponentListener
 		exitButton.setForeground(Color.white);
 		exitButton.setFont(normalFont);
 		exitButton.setFocusPainted(false);
-	//	exitButton.addActionListener(tsHandler);
+		exitButton.addActionListener(choiceHandler);
+		exitButton.setActionCommand("c5");
 		exitButton.setOpaque(true);
 		exitButton.setBorderPainted(false);
 		
@@ -398,6 +399,8 @@ public class Game implements ComponentListener
 			case"c2":ButtonFunction(sw.B2Function);break;
 			case"c3":ButtonFunction(sw.B3Function);break;
 			case"c4":ButtonFunction(sw.B4Function);break;
+			case"c5":ButtonFunction("Exit");break;
+			
 			}
 			
 		}
