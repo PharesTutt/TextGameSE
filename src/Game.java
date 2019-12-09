@@ -269,9 +269,12 @@ public class Game implements ComponentListener
 		mainTextPanel.setVisible(false);
 		choiceButtonPanel.setVisible(false);
 		
+		PicturePanel.setVisible(false);
+		titleNamePanel.setVisible(false);
+		startButtonPanel.setVisible(false);
 		titleNamePanel.setVisible(true);
 		startButtonPanel.setVisible(true);
-		PicturePanel.setVisible(false);
+
 	}
 	public void createGameScreen() //update window to display main game screen
 	{	
@@ -285,7 +288,7 @@ public class Game implements ComponentListener
 		scene = ".//resources//TextFiles//"+folderName+"//scene1";
 		SceneSetup();
 	}
-	  Timer timer = new Timer(20,new ActionListener()
+	  Timer timer = new Timer(10,new ActionListener()
 	{ @Override
 	  public void actionPerformed(ActionEvent e)
 	  {
