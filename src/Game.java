@@ -31,7 +31,7 @@ public class Game implements ComponentListener
 	JButton startButton,loadButton,exitButton, choice1,choice2,choice3,choice4;
 	JTextArea mainTextArea, voiceOptions;
 	String titleMusic, gameMusic, encounterMusic;
-	String text,imagePath,PPath,folderName;
+	String text,imagePath,PPath,folderName,game1,game2,pastMusic;
 	ImageIcon image;
 	Image lmage;
 	int windowWidth,windowHeight, image_w,image_h;
@@ -48,6 +48,7 @@ public class Game implements ComponentListener
 	
 	/////////////////////////////////////////////////////////////
 	sideWork sw=new sideWork();
+
 	String scene=".//resources//TextFiles//"+folderName+"//TitleScreen";
 	public static void main(String[] args) //main method
 	{
@@ -68,7 +69,7 @@ public class Game implements ComponentListener
 			
 		}
 	}
-	
+
 	public void play() {
 		audio.setFramePosition(0);
 		audio.start();
@@ -85,18 +86,24 @@ public class Game implements ComponentListener
 	
 	public Game()//game start method
 	{
+		
+		game1 = "Cardinal Exploring";
+		game2 = "Gumshoe";
+	
+		
+		
 	//	GraphicsEnvironment gEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
 	//	gDevice = gEnvironment.getDefaultScreenDevice();
-		folderName = "Cardinal Exploring";
-		 scene=".//resources//TextFiles//"+folderName+"//TitleScreen";
+		folderName = game1;
+		scene=".//resources//TextFiles//"+folderName+"//TitleScreen";
 		sw.SetSceneVar(scene);
 		System.out.println(sw.MPath);
-		titleMusic = ".//resources//Music//YouLikeJazz.wav";
+		titleMusic = sw.MPath;
 		gameMusic = ".//resources//Music//Real Idle music.wav";
 		encounterMusic = ".//resources//Music//suspense.wav";
 		
 		
-		setFile(titleMusic);
+		setFile(sw.MPath);
 		play();
 		loop();
 		
@@ -148,6 +155,7 @@ public class Game implements ComponentListener
 		startButton.setFont(normalFont);
 		startButton.setFocusPainted(false);
 		startButton.addActionListener(tsHandler);
+		startButton.setActionCommand("start");
 		startButton.setOpaque(true);
 		startButton.setBorderPainted(false);
 		
@@ -156,7 +164,8 @@ public class Game implements ComponentListener
 		loadButton.setForeground(Color.white);
 		loadButton.setFont(normalFont);
 		loadButton.setFocusPainted(false);
-	//	loadButton.addActionListener(tsHandler);
+		loadButton.addActionListener(tsHandler);
+		loadButton.setActionCommand("load");
 		loadButton.setOpaque(true);
 		loadButton.setBorderPainted(false);
 		
@@ -165,7 +174,8 @@ public class Game implements ComponentListener
 		exitButton.setForeground(Color.white);
 		exitButton.setFont(normalFont);
 		exitButton.setFocusPainted(false);
-	//	exitButton.addActionListener(tsHandler);
+		exitButton.addActionListener(tsHandler);
+		exitButton.setActionCommand("exit");
 		exitButton.setOpaque(true);
 		exitButton.setBorderPainted(false);
 		
@@ -262,16 +272,19 @@ public class Game implements ComponentListener
 	public void Title()
 	{
 		stop();
-		setFile(titleMusic);
+		setFile(sw.MPath);
 		play();
 		loop(); 
 		
 		mainTextPanel.setVisible(false);
 		choiceButtonPanel.setVisible(false);
 		
+		PicturePanel.setVisible(true);
+		titleNamePanel.setVisible(false);
+		startButtonPanel.setVisible(false);
 		titleNamePanel.setVisible(true);
 		startButtonPanel.setVisible(true);
-		PicturePanel.setVisible(false);
+
 	}
 	public void createGameScreen() //update window to display main game screen
 	{	
@@ -318,15 +331,15 @@ public class Game implements ComponentListener
 	}
 	public void SceneSetup()
 	{
+		pastMusic = sw.MPath;
 		sw.SetSceneVar(scene);
-		
-		if(!sw.MPath.equals("")) {
-		stop();
-		setFile(sw.MPath);
-		loop();
-		}else {
-			
-		}
+		if(sw.MPath.equals("") || sw.MPath.equals(pastMusic)) {}
+		else {				
+			stop();
+			setFile(sw.MPath);
+			loop();
+				
+			}
 		if(!sw.PPath.equals("")) {
 		imagePath = sw.PPath;//set scene1a.jpg and folder to a variable
 		image = new ImageIcon(imagePath);
@@ -340,7 +353,7 @@ public class Game implements ComponentListener
 		choice4.setText(sw.B4Path);
 		mainTextPanel.revalidate();
 		mainTextPanel.repaint();
-		choiceButtonPanel.setVisible(false);
+		choiceButtonPanel.setVisible(false);// Used in order to get button choices to pop back up after repaint of picture.
 		choiceButtonPanel.setVisible(true);
 
 		//set text equal to what the received input is
@@ -357,10 +370,13 @@ public class Game implements ComponentListener
 	}
 	public void ButtonFunction(String Function) {
 		try {
-		if(Function.equals("Exit")) {
+		if(Function.equals("changeTitle")) {
+			BackToTitle();
+		}
+		else if(Function.equals("Exit")) {
 			System.exit(0);
 		}
-		if(Function.equals("")) {
+		else if(Function.equals("")) {
 
 		}// change buttonFunction V to SceneSetup
 		else { 
@@ -372,6 +388,46 @@ public class Game implements ComponentListener
 		}
 		
 	}
+	public void changeTitle() {
+		
+		if(folderName.equals(game1))
+		folderName = game2;
+		else if(folderName.equals(game2))
+		folderName = game1;
+		
+		
+		
+		scene=".//resources//TextFiles//"+folderName+"//TitleScreen";
+		sw.SetSceneVar(scene);
+	
+		titleNameLabel.setText(folderName);
+		
+		imagePath = sw.PPath;//set scene1a.jpg and folder to a variable
+		image = new ImageIcon(imagePath);
+		PictureLabel.setIcon(resize(image,window.getWidth(),window.getHeight()));
+		PicturePanel.revalidate();
+		PicturePanel.repaint();	
+		
+		Title();
+
+	}
+	public void BackToTitle() {
+			
+		scene=".//resources//TextFiles//"+folderName+"//TitleScreen";
+		sw.SetSceneVar(scene);
+	
+		titleNameLabel.setText(folderName);
+		
+		imagePath = sw.PPath;//set scene1a.jpg and folder to a variable
+		image = new ImageIcon(imagePath);
+		PictureLabel.setIcon(resize(image,window.getWidth(),window.getHeight()));
+		PicturePanel.revalidate();
+		PicturePanel.repaint();	
+		
+		Title();
+
+	}
+
 
 	
 	public class TitleScreenHandler implements ActionListener
@@ -379,7 +435,16 @@ public class Game implements ComponentListener
 		
 		public void actionPerformed(ActionEvent event) 
 		{
-			createGameScreen();
+			
+			
+			String yourChoice = event.getActionCommand();
+			
+			switch(yourChoice){
+			case"start":createGameScreen();break;
+			case"load":changeTitle();break;
+			case"exit":System.exit(0);break;
+			}
+			
 		}
 		
 	}
@@ -396,7 +461,6 @@ public class Game implements ComponentListener
 			case"c3":ButtonFunction(sw.B3Function);break;
 			case"c4":ButtonFunction(sw.B4Function);break;
 			}
-			
 		}
 
 	}
@@ -430,6 +494,7 @@ public class Game implements ComponentListener
 	//	normalFont = new Font("Times New Roman", Font.PLAIN, 25);
 	//	textFont = new Font("Times New Roman", Font.PLAIN, 15);
 		
+	//Next few lines of code manipulate component Bounds and repaint the picture.
 		titleNamePanel.setBounds(intRound(windowWidth,0.55555), intRound(windowHeight,0.06), intRound(windowWidth,0.4270), intRound(windowHeight,0.16));
 		titleNamePanel.revalidate();
 		PicturePanel.setBounds(0, -(intRound(windowHeight,0.04)), intRound(windowWidth,1), intRound(windowHeight,1));	
@@ -438,6 +503,7 @@ public class Game implements ComponentListener
 		image_w = windowWidth;
 		image_h = windowHeight;
 		
+		//Commented out code here is old method of repaint that was ineffective.
 		//Image im = image.getImage().getScaledInstance(image_w, image_h,Image.SCALE_DEFAULT);
 		//image = new ImageIcon(im);
 		//PictureLabel.setIcon(image);
@@ -445,6 +511,7 @@ public class Game implements ComponentListener
 		PictureLabel.revalidate();
 		PicturePanel.revalidate();
 
+		//Bound setting for components below.
 		startButtonPanel.setBounds(intRound(windowWidth,0.61728), intRound(windowHeight,0.25), intRound(windowWidth,0.246913), intRound(windowHeight,0.2));
 		startButtonPanel.revalidate();
 		mainTextPanel.setBounds(0, intRound(windowHeight,0.626), intRound(windowWidth,0.6175), intRound(windowHeight,0.3));

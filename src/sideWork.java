@@ -44,9 +44,6 @@ public  void SetSceneVar(String SFN)//SFN = SceneFileName
 	{
 		
 	}
-	
-	
-	//SceneSetup();
 }
 
 
